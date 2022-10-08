@@ -1,14 +1,13 @@
+
 import 'package:chat_demo/models/app_theme.dart';
-import 'package:chat_demo/firstpage.dart';
+import 'package:chat_demo/models/idfetch.dart';
+import 'package:chat_demo/screens/user_page.dart';
 import 'package:chat_demo/signup.dart';
-import 'package:chat_demo/login.dart';
-import 'package:form_field_validator/form_field_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'API/apis.dart';
 import 'API/constants.dart';
 import 'classes/login_request_model.dart';
+
 
 
 class Login extends StatelessWidget {
@@ -24,13 +23,20 @@ class Login extends StatelessWidget {
         primaryColor: MyTheme.kPrimaryColor,
         accentColor: MyTheme.kAccentColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        primarySwatch: Colors.deepPurple,
-        appBarTheme: AppBarTheme(backgroundColor: Colors.deepPurple.shade900),
+        primarySwatch: Colors.indigo,
+        appBarTheme: AppBarTheme(backgroundColor: Color.fromRGBO(11, 1, 87, 0.89)),
       ),
+      initialRoute: '/',
+
       title: _title,
       home: Scaffold(
         appBar: AppBar(title:  Text(_title,style: GoogleFonts.chivo()),),
-        body:Container( decoration: BoxDecoration(color: Colors.white),
+        body:Container( constraints: BoxConstraints.expand(),
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("image/bg3.jpeg"),
+                  fit: BoxFit.cover),),
+
 
           child:const LoginWidget(),),/* add child content here */
       ),
@@ -49,11 +55,11 @@ class LoginWidget extends StatefulWidget {
 
 class _MyStatefulWidgetState extends State<LoginWidget> {
   bool isApiCallProcess = true;
-  late String username='',password='';
+
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-
+  late String username=nameController.text,password=passwordController.text;
   final GlobalKey<FormState> _formKey =GlobalKey<FormState>();
   void _trySubmitForm(){
     final bool? isValid=_formKey.currentState?.validate();
@@ -82,7 +88,7 @@ class _MyStatefulWidgetState extends State<LoginWidget> {
               child: const Text(
                 'Chat App',
                 style: TextStyle(
-                    color: Colors.black,
+                    color: Colors.indigo,
                     fontWeight: FontWeight.w500,
                     fontSize: 30),
               ),),
@@ -91,7 +97,7 @@ class _MyStatefulWidgetState extends State<LoginWidget> {
               padding: const EdgeInsets.all(10),
               child: const Text(
                 'Login',
-                style: TextStyle(fontSize:20,
+                style: TextStyle(fontSize:25,
                 ),
               ),
             ),
@@ -105,17 +111,17 @@ class _MyStatefulWidgetState extends State<LoginWidget> {
                   labelText: 'User Name',
                       ),
 
-                /*validator: (value){
+                validator: (value){
                   if(value==null||value.trim().isEmpty)
                   {
                     return 'Please Enter Username';
                   }
-                  if(value.trim().length<4)
+                  if(value.trim().length<2)
                   {
-                    return 'Username must be at least 4 characters in length';
+                    return 'Username must be at least 2 characters in length';
                   }
                   return null;
-                },*/
+                },
 
               ),
 
@@ -150,7 +156,7 @@ class _MyStatefulWidgetState extends State<LoginWidget> {
               onPressed: () {
                 //forgot password screen
               },
-              child: const Text('Forgot Password',),
+              child: const Text('Forgot Password?',),
             ),
 
             Container(
@@ -162,36 +168,63 @@ class _MyStatefulWidgetState extends State<LoginWidget> {
                           (Set<MaterialState> states) {
                         if (states.contains(MaterialState.pressed))
                           return Colors.red.shade300;
-                        return Colors.deepPurple.shade800; // Use the component's default.
+                        return Color.fromRGBO(11, 1, 87, 0.89); // Use the component's default.
                       },
                     ),
                   ),
                   child: const Text('Login'),
                   onPressed: () {
+                    if(_formKey.currentState!.validate() )
+
+                    {
+                      setState(() {
+                        isApiCallProcess = true;
+                      });
+
+                    }
                     LoginRequestModel model = LoginRequestModel(
                       username: nameController.text,
                       password: passwordController.text,
                     );
 
-                    APIService.login(model).then(
-                            (response) {
-                          setState(() {
-                            isApiCallProcess = false;
-                          });
 
-                          if (response) {
-                            Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              '/home',
-                                  (route) => false,
+                    APIService.Log(model).then(
+                            (response) async {
+
+
+                              setState(() {
+                                isApiCallProcess = false;
+                              });
+                              if (response==false) {
+                                await showDialog(
+
+                                    context: context,
+                                    builder: (context) => new AlertDialog(
+                                  title: new Text('Message'),
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                                  content: Text(
+                                      'User Does not exist'),
+                                  actions: <Widget>[
+                                    new FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context, rootNavigator: true)
+                                            .pop(); // dismisses only the dialog and returns nothing
+                                      },
+                                      child: new Text('OK'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                              }
+                              else {
+
+                                ipfetchModel ip = ipfetchModelFromJson(response);
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => userpage(id: ip.Id, key: Key(""),)));
+                                };
+                              }
                             );
 
-                            Navigator.push(context,
-                                MaterialPageRoute(
-                                    builder: (context) => FirstPage()));
-                          }
-                        }
-                    );
+
                   }),
 
             ),
@@ -227,4 +260,3 @@ class _MyStatefulWidgetState extends State<LoginWidget> {
     );
   }
 }
-

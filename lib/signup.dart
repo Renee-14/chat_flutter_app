@@ -1,10 +1,14 @@
 import 'package:chat_demo/login.dart';
+import 'package:chat_demo/screens/reg_success.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_demo/login.dart';
 import 'package:chat_demo/signup.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:chat_demo/models/app_theme.dart';
+
+import 'API/constants.dart';
+import 'classes/register_request_model.dart';
 
 class Signup extends StatelessWidget {
   const Signup({Key? key}) : super(key: key);
@@ -19,13 +23,18 @@ class Signup extends StatelessWidget {
         primaryColor: MyTheme.kPrimaryColor,
         accentColor: MyTheme.kAccentColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
-        primarySwatch: Colors.deepPurple,
-        appBarTheme: AppBarTheme(backgroundColor: Colors.deepPurple.shade900),
+        primarySwatch: Colors.indigo,
+        appBarTheme: AppBarTheme(backgroundColor: Color.fromRGBO(11, 1, 87, 0.89)),
       ),
       title: _title,
       home: Scaffold(
         appBar: AppBar(title:  Text(_title,style: GoogleFonts.chivo())),
-        body:Container( decoration: BoxDecoration(color: Colors.white),
+        body:Container( constraints: BoxConstraints.expand(),
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("image/bg3.jpeg"),
+                  fit: BoxFit.cover),
+            ),
 
           child:const SignWidget(),/* add child content here */
         ),
@@ -43,22 +52,31 @@ class SignWidget extends StatefulWidget {
 }
 
 class _MyStatefulWidgetState extends State<SignWidget> {
+  bool isApiCallProcess = false;
+  bool hidePassword = true;
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  late String name='',password='',confirmpassword='';
+  TextEditingController firstnameController = TextEditingController();
+  TextEditingController lastnameController= TextEditingController();
+
+  late String username=nameController.text,
+      password=passwordController.text,
+      firstname=firstnameController.text,
+      lastname=lastnameController.text;
   final GlobalKey<FormState> _formKey =GlobalKey<FormState>();
   void _trySubmitForm() {
     final bool? isValid = _formKey.currentState?.validate();
     if (isValid == true) {
       debugPrint('Everything looks good');
-      debugPrint(name);
+      debugPrint(username);
     }
   }
+  String? gender;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(15),
         child: Form(
           key: _formKey,
           child: ListView(
@@ -69,7 +87,7 @@ class _MyStatefulWidgetState extends State<SignWidget> {
                   child: const Text(
                     'Chat App',
                     style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.indigo,
                         fontWeight: FontWeight.w500,
                         fontSize: 30),
                   )),
@@ -96,12 +114,58 @@ class _MyStatefulWidgetState extends State<SignWidget> {
                     return null;
                   },
                   onChanged: (value) =>
-                  name = value,
+                  username = value,
 
                   controller: nameController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'User Name',
+
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                child: TextFormField(
+                  keyboardType: TextInputType.text,
+                  validator: (value){
+                    if(value==null||value.trim().isEmpty)
+                    {
+                      return 'Please Enter Username';
+                    }
+                    return null;
+
+                  },
+                  onChanged: (value) =>
+                  firstname = value,
+
+                  controller: firstnameController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'First Name',
+
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                child: TextFormField(
+                  keyboardType: TextInputType.text,
+                  validator: (value){
+                    if(value==null||value.trim().isEmpty)
+                    {
+                      return 'Please Enter Username';
+                    }
+                    return null;
+
+                  },
+                  onChanged: (value) =>
+                  lastname= value,
+
+                  controller: lastnameController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Last Name',
 
                   ),
                 ),
@@ -129,28 +193,30 @@ class _MyStatefulWidgetState extends State<SignWidget> {
                   ),
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(20, 10, 20,10),
-                child: TextFormField(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'This field is required';
-                    }
-
-                    if (value != password) {
-                      return 'Confimation password does not match the entered password';
-                    }
-
-                    return null;
-                  },
-                  onChanged: (value) => confirmpassword = value,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Confirm Password',
-                  ),
-                ),
+              Text("Gender",style: TextStyle(fontSize: 15),),
+              ListTile(
+                title: Text("Male"),
+                leading: Radio(
+                    value: "male",
+                    groupValue: gender,
+                    onChanged: (value){
+                      setState(() {
+                        gender = value.toString();
+                      });
+                    }),
               ),
+              ListTile(
+                title: Text("Female"),
+                leading: Radio(
+                    value: "Female",
+                    groupValue: gender,
+                    onChanged: (value){
+                      setState(() {
+                        gender = value.toString();
+                      });
+                    }),
+              ),
+
 
               Container(
                   height: 70,
@@ -161,7 +227,7 @@ class _MyStatefulWidgetState extends State<SignWidget> {
                             (Set<MaterialState> states) {
                           if (states.contains(MaterialState.pressed))
                             return Colors.red.shade300;
-                          return Colors.deepPurple.shade800; // Use the component's default.
+                          return Color.fromRGBO(11, 1, 87, 0.89); // Use the component's default.
                         },
                       ),
                     ),
@@ -170,7 +236,33 @@ class _MyStatefulWidgetState extends State<SignWidget> {
                       if(_formKey.currentState!.validate()
                       )
                       {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => Login()));
+                        setState(() {
+                          isApiCallProcess = true;
+                        });
+
+                        RegisterRequestModel model = RegisterRequestModel(
+                          username: username,
+                          password: password,
+                          firstname: firstname,
+                          lastname: lastname,
+                        );
+
+                        APIService.register(model).then(
+                              (response) {
+                                setState(() {
+                                  isApiCallProcess = false;
+                                });
+
+                                if (response==true) {
+
+                                      Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => reg()));
+
+                                  };
+
+
+                              });
 
                       }
                       else{
@@ -188,7 +280,7 @@ class _MyStatefulWidgetState extends State<SignWidget> {
                     TextButton(
                       child: const Text(
                         'Login',
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(fontSize: 25),
                       ),
                       onPressed: () {
                         Navigator.push(

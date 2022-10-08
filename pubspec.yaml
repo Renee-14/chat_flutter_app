@@ -35,9 +35,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_chat_bubble:
   http: ^0.13.4
-  socket_io_client:
+  socket_io_client: ^0.9.12
   json_annotation:
   api_cache_manager:
+
 
 dev_dependencies:
   flutter_test:
@@ -76,6 +77,9 @@ flutter:
     - image/pic3.png
     - image/bg.jpg
     - image/K85.jpg
+    - image/AR7.jpeg
+    - image/bg2.png
+    - image/bg3.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

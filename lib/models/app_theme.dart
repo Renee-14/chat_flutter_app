@@ -4,10 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 class MyTheme{
   MyTheme._();
-  static Color kPrimaryColor = Colors.deepPurple.shade900;
+  static Color kPrimaryColor = Colors.deepPurple.shade500;
   static Color kPrimaryColorVariant = Color(0xff686795);
-  static Color kAccentColor = Colors.deepPurple.shade900;
-  static Color kAccentColorVariant = Colors.deepPurple.shade900;
+  static Color kAccentColor = Colors.deepPurple.shade500;
+  static Color kAccentColorVariant = Colors.deepPurple.shade500;
   static Color kUnreadChatBG = Color(0xffEE1D1D);
 
   static final TextStyle kAppTitle= GoogleFonts.satisfy(fontSize: 36);

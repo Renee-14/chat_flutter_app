@@ -1,6 +1,3 @@
-import 'package:json_annotation/json_annotation.dart';
-
-
 
 class user {
   late final int id;

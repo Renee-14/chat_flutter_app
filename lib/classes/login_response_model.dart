@@ -4,56 +4,24 @@ LoginResponseModel loginResponseJson(String str) =>
     LoginResponseModel.fromJson(json.decode(str));
 
 class LoginResponseModel {
+  int? id;
   LoginResponseModel({
-    required this.message,
-    required this.data,
+    //required this.message,
+    required this.id,
   });
-  late final String message;
-  late final Data data;
+  //late final String message;
+
 
   LoginResponseModel.fromJson(Map<String, dynamic> json) {
-    message = json['message'];
-    data = Data.fromJson(json['data']);
-  }
-
-  Map<String, dynamic> toJson() {
-    final _data = <String, dynamic>{};
-    _data['message'] = message;
-    _data['data'] = data.toJson();
-    return _data;
-  }
-}
-
-class Data {
-  Data({
-    required this.username,
-    required this.password,
-
-    required this.id,
-    required this.token,
-  });
-
-  late final String username;
-  late final String password;
-
-  late final String id;
-  late final String token;
-
-  Data.fromJson(Map<String, dynamic> json) {
-    username = json['username'];
-    password = json['password'];
-
+    //message = json['message'];
     id = json['id'];
-    token = json['token'];
   }
 
   Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['username'] = username;
-    data['password'] = password;
-
-    data['id'] = id;
-    data['token'] = token;
+    final Map<String, dynamic> data =new Map<String, dynamic>();
+    //_data['message'] = message;
+    data['id'] = this.id;
     return data;
   }
 }
+

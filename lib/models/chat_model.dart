@@ -1,33 +1,37 @@
 import 'dart:convert';
 
-ChatModel chatModelFromJson(String str) => ChatModel.fromJson(json.decode(str));
+ChatModel ChatModelFromJson(String str) => ChatModel.fromJson(json.decode(str));
 
-String chatModelToJson(ChatModel data) => json.encode(data.toJson());
+String ChatModelToJson(ChatModel data) => json.encode(data.toJson());
 
 class ChatModel {
   ChatModel({
-    required this.id,
-    required this.username,
-    required this.sentAt,
+    required this.type,
+   // required this.username,
+   // required this.sentAt,
     required this.message,
+    //required this.id,
   });
 
-  String? id;
-  String username;
-  String sentAt;
+  String? type;
+  //String username;
+  //String sentAt;
   String message;
 
+
+
   factory ChatModel.fromJson(Map<String, dynamic> json) => ChatModel(
-    id: json["id"],
-    username: json["username"],
-    sentAt: json["sentAt"],
+    type: json["type"],
+    //username: json["username"],
+    //sentAt: json["sentAt"],
     message: json["message"],
+   // id:json["id"]
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "username": username,
-    "sentAt": sentAt,
+    "type": type,
+    //"username": username,
+    //"sentAt": sentAt,
     "message": message,
   };
 }
